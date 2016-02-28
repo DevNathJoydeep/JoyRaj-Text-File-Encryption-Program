@@ -1,0 +1,315 @@
+#########################################################################################################
+#													#			
+#			JoyRaj Text File Encryption Program v2.17.7.14 Source Code			#			
+#													#
+#			 Original code written in JoyRaj Code Compiler v1.10.7.14			#
+#													#
+#			    Best viewed in Font: Lucida Console and Size: 10px.                         #
+#													#
+#########################################################################################################
+
+
+
+//declaring the names of pages and popups.
+
+[declare] 	page(page1, page2), popup(popup1, popup2, popup3)			
+
+
+
+//defining the page named page1, which will be titled "JoyRaj Text File Encryption Program v2.17.7.14" with a width of 500px. and height of 300px.The background consists of an image named backgrnd.jpg and the skin to be applied is "joyraj_application_theme_v115714_white_main.skn" with icon "favicon.ico".
+
+[define] 	page(page1)								 
+	 	title(JoyRaj Text File Encryption Program v2.17.7.14)			
+         	dimensions(500,300)
+         	background(image(backgrnd.jpg))
+         	skin(joyraj_application_theme_v115714_white_main.skn)
+		icon(favicon.ico)
+
+
+
+//generating three buttons- button1, button2 and button3 in page1 named ENCRYPT, PREVIEW and DECRYPT respectively. The style of buttons will be a predefined one(.white) and the width and height of the buttons will be 119px. and 45px. respectively.
+
+[object] 	button1(ENCRYPT, button.white(119,45))
+         	button2(PREVIEW, button.white(119,45))
+         	button3(DECRYPT, button.white(119,45))
+
+
+
+//assigning positions to the objects in coordinate system (position from left border, position from top border)	
+
+[position] 	button1(20,119)
+	  	button2(191,119)
+	   	button3(362,119)
+
+
+
+//assigning functions to the objects. button1, button2 and button3 displays the popups- popup1, popup2 and popup3 respectively.
+
+[function] 	button1
+	   	
+		{
+
+ 	   	(show.popup(popup1))
+	   	
+		}
+
+	   	button2
+	   	
+		{
+
+ 	   	(show.popup(popup2))
+
+	   	}
+
+	  	 button3
+
+	   	{
+
+ 	   	(show.popup(popup3))
+
+	   	}
+
+
+
+
+
+
+[define] 	page(page2)
+	 	title(Command Screen)
+	 	dimensions(500,300)
+ 	 	background(gradient(ffffff,000000))
+	 	skin(joyraj_application_theme_v115714_white_extended.skn)
+
+
+[variables] 	string(command)
+
+
+[object] 	textbox1(background=ffffff, border=000000(1), (461,188))
+         	textbox2(background=ffffff, border=000000(0), (20,250))
+         	button1(Print Info, button.white(118,31))
+
+
+[position] 	textbox1(20,53)
+	   	textbox2(20,250)
+	   	button1(118,31)
+
+
+[function] 	button1
+
+	   	{
+
+	   	command = textbox.gettext(textbox1,({center}Command Output{/center}))
+
+	   	if (command == "HELP")
+	   	then textbox.settext(textbox1(HELP:\n-------------------------------------------------------------------\n 
+					 * STATUS: To print the status.\n
+				         * VERSION: To print the version.\n
+					 * MAIL: To send an e-mail to the developer\n
+				         * STRING: To print the encryption string used\n
+					 -------------------------------------------------------------------\n
+					 Please use the commands in capital letters only.))
+
+	   	elseif (command == "STATUS")
+	   	then textbox.settext(textbox2(STATUS:\n-------------------------------------------------------------------\n
+					 JoyRaj Text File Encryption Program v2.17.7.14 is working properly.\n					 					 			 -------------------------------------------------------------------))
+
+	  	elseif (command == "MAIL")
+	   	then textbox.settext(textbox2(MAIL:\n-------------------------------------------------------------------\n
+					 Please check your E-mail client. It should have started,\n
+		      	  		 please complete the rest of the process in your E-mail client.\n					 					 			 -------------------------------------------------------------------))
+		     email.defaultclient(guwahatimetro@gmail.com)
+
+	   	elseif (command == "STRING")
+	   	then textbox.settext(textbox2(STRING:\n-------------------------------------------------------------------\n
+					 This program uses Blowfish encryption string.\n					 					 			                 -------------------------------------------------------------------))
+	   	end
+
+	   	}
+
+
+
+
+
+
+
+[define] 	popup(popup1)
+	 	title(File Encryption)
+         	dimensions(400,250)
+ 	 	background(gradient(ffffff,00ff00))
+         	skin(joyraj_application_theme_v115714_white_popup.skn)
+
+[variables] 	string(file_browse, text_browse, file_save, text_save, key)
+
+[object] 	label1(color=000000,(Key: ))
+	 	label2(color=000000,(Input: ))
+	 	label3(color=000000,(Output: ))
+	 	textbox1(background=ffffff, border=000000(1)(281,61))
+         	textbox2(background=ffffff, border=000000(1)(203,23))
+	 	textbox3(background=ffffff, border=000000(1)(203,23))
+	 	button1(Browse, button.white(75,23))
+	 	button2(Save As, button.white(75,23))
+         	button3(ENCRYPT, button.white(98,37))
+	
+[position] 	label1(51,40)
+	   	label2(43,120)
+	   	label3(32,152)
+	   	textbox1(20,250)
+	   	textbox2(20,250)
+	   	textbox3(20,250)
+	   	button1(20,119)
+	   	button2(191,119)
+	   	button3(362,119)
+
+[function] 	button1
+
+	   	{
+
+	   	file_browse = browse.file(Browse Text File, Text Files (*.txt))
+	   	text_browse = textbox.settext(textbox2(file_browse))
+
+	   	}
+
+	   	button2
+
+	   	{
+
+	   	file_save = browse.file(Save Encrypted File, Encrypted Files (*.enf))
+	   	text_save = textbox.settext(textbox3(file_save))
+
+	   	}
+
+	   	button3
+
+	   	{
+
+	   	key = textbox.gettext(textbox1)
+	   	blowfishencrypt.text(text_browse, text_save, key)
+
+	   	if (key == " ") 
+           	then enable(button3, false)
+	   	else enable(button3, true)
+
+	   	end
+	   
+	   	}
+
+
+
+
+
+
+[define] 	popup(popup3)
+		title(File Decryption)
+         	dimensions(400,250)
+ 	 	background(gradient(ffffff,ff0000))
+         	skin(joyraj_application_theme_v115714_white_popup.skn)
+
+[variables] 	string(file_browse, text_browse, file_save, text_save, key)
+
+[object] 	label1(color=000000,(Key: ))
+	 	label2(color=000000,(Input: ))
+	 	label3(color=000000,(Output: ))
+	 	textbox1(background=ffffff, border=000000(1)(281,61))
+         	textbox2(background=ffffff, border=000000(1)(203,23))
+	 	textbox3(background=ffffff, border=000000(1)(203,23))
+	 	button1(Browse, button.white(75,23))
+	 	button2(Save As, button.white(75,23))
+         	button3(DECRYPT, button.white(98,37))
+	
+[position] 	label1(51,40)
+	   	label2(43,120)
+	   	label3(32,152)
+	   	textbox1(20,250)
+	   	textbox2(20,250)
+	   	textbox3(20,250)
+	   	button1(20,119)
+	   	button2(191,119)
+	   	button3(362,119)
+
+[function] 	button1
+
+	   	{
+
+	   	file_browse = browse.file(Browse Encrypted File, Encrypted Files (*.enf))
+	   	text_browse = textbox.settext(textbox2(file_browse))
+
+	   	}
+
+	   	button2
+
+	   	{
+
+	   	file_save = browse.file(Save Text File, Text Files (*.txt))
+	   	text_save = textbox.settext(textbox3(file_save))
+
+	   	}
+
+	   	button3
+
+	   	{
+
+	   	key = textbox.gettext(textbox1)
+	   	blowfishdecrypt.text(text_browse, text_save, key)
+
+	   	if (key == " ") 
+          	then enable(button3, false)
+	   	else enable(button3, true)
+
+	   	end
+
+	  	}
+
+
+
+
+
+
+[define] 	popup(popup3)
+	 	title(File Preview)
+         	dimensions(400,500)
+ 	 	background(gradient(ffffff,3366ff))
+         	skin(joyraj_application_theme_v115714_white_popup.skn)
+
+[variables] 	string(file_browse, text_browse, file_save, text_save, key)
+
+[object] 	label1(color=000000,(Key: ))
+	 	label2(color=000000,(Input: ))
+	 	textbox1(background=ffffff, border=000000(1)(281,61))
+         	textbox2(background=ffffff, border=000000(1)(203,23))
+	 	textbox3(background=ffffff, border=000000(1)(361,270))
+	 	button1(Browse, button.white(75,23))
+         	button2(DECRYPT and PREVIEW, button.white(191,37))
+	
+[position] 	label1(52,41)
+	   	label2(44,121)
+	   	textbox1(85,40)
+	   	textbox2(85,121)
+	   	textbox3(20,158)
+	   	button1(271,121)
+	   	button2(105,444)
+
+[function] 	button1
+
+	   	{
+
+	   	file_browse = browse.file(Browse Encrypted File, Encrypted Files (*.enf))
+	   	text_browse = textbox.settext(textbox2(file_browse))
+
+	   	}
+
+	   	button2
+
+	   	{
+
+	   	key = textbox.gettext(textbox1)
+	   	decrypted_file = blowfishdecrypt.text(text_browse, "\\temp_decrypted_file.txt", key)
+ 	   	textbox.settext(textbox3("\\temp_decrypted_file.txt"))
+
+	   	if (key == " ") 
+           	then enable(button2, false)
+	   	else enable(button2, true)
+
+	   	end
+
+	   	}
+
